@@ -65,6 +65,15 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
                                             self.y[:,i], 
                                             pen=pg.mkPen(color=self.gcolors[i], 
                                                             width=2)))
+
+
+        self.disconnect_button.setEnabled(False)
+        self.start_stop_recording.setEnabled(False)
+        self.start_stop.setEnabled(False)
+        self.actionDisconnect.setEnabled(False)
+        self.actionStart_stop_recording.setEnabled(False)
+        self.actionStart_Stop_getting_data.setEnabled(False)
+
         self.actionThis_Application.triggered.connect(self.this_app)
         # self.actionDisconnect.triggered(self.connection)
         self.connect_button.clicked.connect(self.connection)
@@ -92,7 +101,13 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         print (device_name)
         try:
             self.device = urpcadc.UrpcadcDeviceHandle(device_name)
-            # self.disconnect_button.
+            self.disconnect_button.setEnabled(True)
+            self.connect_button.setEnabled(False)
+            self.start_stop.setEnabled(True)
+            self.actionDisconnect.setEnabled(True)
+            # self.actionStart_stop_recording.setEnabled(True)
+            self.actionStart_Stop_getting_data.setEnabled(True)
+            self.actionConnect.setEnabled(False)
         except:
             msgbox = qt.QMessageBox()
             msgbox.setText("No connection")
@@ -100,7 +115,15 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
     def disconnection(self):
         self.device.close_device()
         self.rescan_com_ports()
-        print("disconnected")
+        self.disconnect_button.setEnabled(False)
+        self.connect_button.setEnabled(True)
+        self.start_stop.setEnabled(False)
+        self.actionDisconnect.setEnabled(False)
+        self.actionStart_stop_recording.setEnabled(False)
+        self.actionStart_Stop_getting_data.setEnabled(False)
+        self.actionConnect.setEnabled(True)
+        self.start_stop_recording.setEnabled(False)
+        self.start_stop_recording_status = False
     def this_app(self):
         msgbox = qt.QMessageBox()
         msgbox.setText("This is a simple cross-platform application for the uRPCADC device.\nVersion 0.1\nCopyright © 2020 Nikita Presnov\npresnovnikita@yandex.ru")
@@ -135,11 +158,22 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
 
     def start_stop_handler(self):
         self.start_stop_status = not (self.start_stop_status)
-        print(self.start_stop_status)
+        if self.start_stop_status:
+            self.start_stop_recording.setEnabled(True)
+            self.actionStart_stop_recording(True)
+        else:
+            self.start_stop_recording.setEnabled(False)
+            self.actionStart_stop_recording(False)
         self.period_chanded()
+        
     def start_stop_recording_handler(self):
         self.start_stop_recording_status = not (self.start_stop_recording_status)
-        print(self.start_stop_recording_status)
+        if self.start_stop_recording_status:
+            self.start_stop_recording.setStyleSheet('background: rgb(0,170,0);')
+        else:
+            self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
+            # setStyleSheet('background: rgb(254,254,254);')
+        # print(self.start_stop_recording_status)
     def save_handler(self):
         FILENAME, FILTER = qt.QFileDialog.getSaveFileName(None, 
                                                     'Save File', 
