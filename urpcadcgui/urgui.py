@@ -92,7 +92,7 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         print (device_name)
         try:
             self.device = urpcadc.UrpcadcDeviceHandle(device_name)
-            self.disconnect_button.
+            # self.disconnect_button.
         except:
             msgbox = qt.QMessageBox()
             msgbox.setText("No connection")

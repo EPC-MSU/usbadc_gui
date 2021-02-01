@@ -5,13 +5,8 @@
 
 Запустить этот проект (из корня):
 ```bash
-python hello_world/app.py
+python urpcadcgui/urgui.py
 ```
-Запустить тесты (из корня):
-```bash
-python -m unittest discover tests
-```
-
 Пишите unit-тесты к своим приложениям в tests/
 
 Создан в рамках https://ximc.ru/issues/44427
