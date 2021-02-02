@@ -160,10 +160,10 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         self.start_stop_status = not (self.start_stop_status)
         if self.start_stop_status:
             self.start_stop_recording.setEnabled(True)
-            self.actionStart_stop_recording(True)
+            self.actionStart_stop_recording.setEnabled(True)
         else:
             self.start_stop_recording.setEnabled(False)
-            self.actionStart_stop_recording(False)
+            self.actionStart_stop_recording.setEnabled(False)
         self.period_chanded()
         
     def start_stop_recording_handler(self):
