@@ -25,6 +25,10 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         # self.graphWidget.setParent(self.plot_window)
         # self.ur_graphicsView.
         self.graphWidget.setBackground('w')
+        # self.graphWidget.enableMouse(b = False)
+        # self.graphWidget.autoRange(padding = 0)
+        self.graphWidget.enableAutoRange()
+        self.graphWidget.setLimits(yMin = 0, yMax = 3.3)
         self.timer = qtc.QTimer(self)
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self.timer_handler)
@@ -45,18 +49,19 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         #'blue', 'green', 'red', 'black', 'orange', 'lightblue', 'lightgreen', 'pink',  'grey', 'brown'
 
         
-        self.x = np.linspace(0, 10, 1000)
+        self.x = np.linspace(-0.2*1000, 0, 1000)
         self.y = np.zeros((1000,10))#np.sin(2 * np.pi * ((x+phi) * f))
         self.graphWidget.setBackground('w')
         # plot data: x, y values
         # pen1 = pg.mkPen(color=(255, 0, 0),width=2)
         # pen2 = pg.mkPen(color=(0, 255, 0),width=2)
         styles = {'color':'r', 'font-size':'20px'}
-        self.graphWidget.setLabel('left', 'Volage, V', **styles)
-        self.graphWidget.setLabel('bottom', 'Time', **styles)
+        self.graphWidget.setLabel('left', 'Voltage ,volts', **styles)
+        self.graphWidget.setLabel('bottom', 'Time, milliseconds', **styles)
         self.graphWidget.showGrid(x=True, y=True)
-        self.graphWidget.setYRange(-10, 33000, padding=0)
-        self.graphWidget.setXRange(0, 10, padding=0)
+        self.graphWidget.setYRange(-0, 3.3, padding=0)
+        
+        # self.graphWidget.setXRange(0, 10, padding=0)
         self.linias = []
         for i in range(10):
             # linia, = 
@@ -98,7 +103,7 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         self.autoscale_button.clicked.connect(self.autoscale)
     def connection(self):
         device_name = self.comboBox_ports.currentText()
-        print (device_name)
+        # print (device_name)
         try:
             self.device = urpcadc.UrpcadcDeviceHandle(device_name)
             self.disconnect_button.setEnabled(True)
@@ -113,6 +118,7 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             msgbox.setText("No connection")
             msgbox.exec_()
     def disconnection(self):
+        self.start_stop_handler()
         self.device.close_device()
         self.rescan_com_ports()
         self.disconnect_button.setEnabled(False)
@@ -136,25 +142,30 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         if self.start_stop_status:
             self.timer.start(self.timer_period)
             self.y = np.zeros((1000,10))
+            self.x = np.linspace(-self.timer_period, 0, 1000)
         else:
             self.timer.stop()
         
-        print(self.comboBox_period_val.currentData())
+        # print(self.comboBox_period_val.currentData())
     def timer_handler(self):
-        """
-        Обработчик таймера.
-        """
-        self.data = self.device.get_conversion()
+        # self.data = (np.array(list(self.device.get_conversion()), dtype=float))
+        data = self.device.get_conversion()
+        # self.x = self.x[1:]  # Remove the first y element.
+        # self.x = np.append(self.x, self.x[-1] + 1)  # Add a new value 1 higher than the last.
+        self.x = self.x + self.timer_period/1000
+        # self.y =  np.roll(self.y,-1,axis=1)
+        # self.y = np.vstack(self.y, data.data/10000)
         for i in range(10):
+            
             self.y[:,i] = np.roll(self.y[:,i],-1,axis=0)
-            self.y[-1,i]=self.data.data[i]
+            self.y[-1,i] = data.data[i]/10000
             # self.linias[i].setData(self.x, self.y[:,i])
             if self.gstates[i]:
                 self.linias[i].setData(self.x, self.y[:,i])
         
         if self.start_stop_recording_status:
             # print(self.y[-1,:])
-            self.data_to_scv = np.vstack((self.data_to_scv, self.y[-1,:]))
+            self.data_to_scv = np.vstack(self.data_to_scv, self.y[-1,:])
 
     def start_stop_handler(self):
         self.start_stop_status = not (self.start_stop_status)
@@ -164,6 +175,9 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         else:
             self.start_stop_recording.setEnabled(False)
             self.actionStart_stop_recording.setEnabled(False)
+            self.start_stop_recording_status = False
+            self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
+            # self.timer.stop()
         self.period_chanded()
         
     def start_stop_recording_handler(self):
@@ -183,11 +197,17 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         print(FILENAME)       
         print(FILTER)
 
-        with open(FILENAME, "w", newline="") as file:
-            writer = csv.writer(file, delimiter='\t')
-            writer.writerows(self.data_to_scv)
-        print(self.data_to_scv)
-        self.data_to_scv = np.empty((1,10))
+        try:
+            with open(FILENAME, "w", newline="") as file:
+                writer = csv.writer(file, delimiter='\t')
+                writer.writerows(self.data_to_scv)
+            # print(self.data_to_scv)
+            self.data_to_scv = np.empty((1,10))
+        except:
+            msgbox = qt.QMessageBox()
+            msgbox.setText("Did not saved")
+            msgbox.exec_()
+
     def replot(self):
         self.gstates[0] = self.b_1_blue.isChecked()
         self.gstates[1] = self.b_2_green.isChecked()
@@ -234,8 +254,12 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             raise RuntimeError("unexpected OS")
         self.comboBox_ports.addItems(valid_ports)
     def autoscale(self):
-        self.graphWidget.setYRange(-10, 33000, padding=0)
-        self.graphWidget.setXRange(0, 10, padding=0)
+        self.graphWidget.enableAutoRange()
+
+        # self.graphWidget.autoRange(padding = 0)
+        # self.graphWidget.setYRange(0, 3.3, padding=0)
+
+        # self.graphWidget.setXRange(0, 10, padding=0)
 
 
 def main():
