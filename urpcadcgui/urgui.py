@@ -1,10 +1,7 @@
 import sys
 import PyQt5.QtWidgets as qt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-import matplotlib.pyplot as plt 
 import numpy as np
 import PyQt5.QtCore as qtc
-from matplotlib.animation import FuncAnimation as ani
 import gui
 import urpcadc
 import csv

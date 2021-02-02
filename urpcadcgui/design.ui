@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>855</width>
-    <height>524</height>
+    <width>1085</width>
+    <height>511</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -614,7 +614,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox_ports"/>
+         <widget class="QComboBox" name="comboBox_ports">
+          <property name="editable">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -667,6 +671,12 @@
           </property>
           <property name="editable">
            <bool>false</bool>
+          </property>
+          <property name="currentText">
+           <string>200 ms</string>
+          </property>
+          <property name="currentIndex">
+           <number>7</number>
           </property>
           <item>
            <property name="text">
@@ -744,7 +754,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>855</width>
+     <width>1085</width>
      <height>29</height>
     </rect>
    </property>

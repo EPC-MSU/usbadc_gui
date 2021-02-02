@@ -1,1 +1,4 @@
 # put your requirements here
+pyqtgraph
+PyQt5
+numpy

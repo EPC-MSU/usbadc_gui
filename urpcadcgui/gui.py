@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(855, 524)
+        MainWindow.resize(1085, 511)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
@@ -244,6 +244,7 @@ class Ui_MainWindow(object):
         self.device_label.setObjectName("device_label")
         self.verticalLayout_2.addWidget(self.device_label)
         self.comboBox_ports = QtWidgets.QComboBox(self.centralwidget)
+        self.comboBox_ports.setEditable(True)
         self.comboBox_ports.setObjectName("comboBox_ports")
         self.verticalLayout_2.addWidget(self.comboBox_ports)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
@@ -292,7 +293,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addLayout(self.horizontalLayout_4)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 855, 29))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1085, 29))
         self.menuBar.setObjectName("menuBar")
         self.menuFILE = QtWidgets.QMenu(self.menuBar)
         self.menuFILE.setObjectName("menuFILE")
@@ -387,6 +388,7 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuABOUT.menuAction())
 
         self.retranslateUi(MainWindow)
+        self.comboBox_period_val.setCurrentIndex(7)
         self.actionOut.triggered.connect(MainWindow.close)
         self.action1_Blue.triggered.connect(self.b_1_blue.toggle)
         self.action2_Green.triggered.connect(self.b_2_green.toggle)
@@ -439,6 +441,7 @@ class Ui_MainWindow(object):
         self.disconnect_button.setText(_translate("MainWindow", "Disconnect"))
         self.rescan_botton.setText(_translate("MainWindow", "Rescan"))
         self.period.setText(_translate("MainWindow", "Period"))
+        self.comboBox_period_val.setCurrentText(_translate("MainWindow", "200 ms"))
         self.comboBox_period_val.setItemText(0, _translate("MainWindow", "1 ms"))
         self.comboBox_period_val.setItemText(1, _translate("MainWindow", "2 ms"))
         self.comboBox_period_val.setItemText(2, _translate("MainWindow", "5 ms"))
