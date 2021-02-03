@@ -11,8 +11,7 @@ import pyqtgraph as pg
 
 class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
     def __init__(self):
-        # Это здесь нужно для доступа к переменным, методам
-        # и т.д. в файле design.py
+        # Это здесь нужно для доступа к переменным, методам и т.д. в файле gui.py
         super().__init__()
         self.setupUi(self)  # Это нужно для инициализации нашего дизайна
         
@@ -20,16 +19,20 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self.timer_handler)
 
+        self.timer_monitor = qtc.QTimer(self)
+        self.timer_monitor.setSingleShot(False)
+        self.timer_monitor.timeout.connect(self.timer_monitoring)
+        self.timer_monitor.start(5000)
+
         self.os_kind = system().lower()
         self.rescan_com_ports()
 
         self.start_stop_status = False
         self.start_stop_recording_status = False
-        period_vals = np.array([0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1])
-        self.comboBox_period_val.setCurrentIndex(7)
+        period_vals = np.array([0.05, 0.1, 0.2, 0.5, 1, 5, 10, 60, 300, 600])
         for i in range(10):
             self.comboBox_period_val.setItemData(i, period_vals[i])
-        self.data_to_scv = np.empty((1,10))
+        self.data_to_scv = np.empty((0,10))
         self.gstates = [True for gstates in range(10)]
         self.gcolors = [(0, 0, 255), (0, 170, 0), (255, 0, 0), (0, 0, 0), (	255, 85, 0), (0, 170, 255), (0, 255, 0), (255, 170, 255),  (111, 111, 111), (170, 85, 0)] 
         #'blue', 'green', 'red', 'black', 'orange', 'lightblue', 'lightgreen', 'pink',  'grey', 'brown'
@@ -98,6 +101,8 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             msgbox.exec_()
     def disconnection(self):
         self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
+        self.save_button.setEnabled(True)
+        self.actionSave.setEnabled(True)
         self.timer.stop()
         self.rescan_com_ports()
         self.disconnect_button.setEnabled(False)
@@ -123,7 +128,7 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         if self.start_stop_status:
             self.timer.start(self.timer_period)
             self.y = np.zeros((1000,10))
-            self.data_to_scv = np.empty((1,10))
+            self.data_to_scv = np.empty((0,10))
             self.x = np.linspace(-self.timer_period, 0, 1000)
         else:
             self.timer.stop()
@@ -147,6 +152,8 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             self.start_stop_recording_status = False
             self.start_stop_status = False
             self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
+            self.save_button.setEnabled(True)
+            self.actionSave.setEnabled(True)
             msgbox = qt.QMessageBox()
             msgbox.setText("Connection lost")
             msgbox.exec_()
@@ -162,6 +169,8 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             self.actionStart_stop_recording.setEnabled(False)
             self.start_stop_recording_status = False
             self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
+            self.save_button.setEnabled(True)
+            self.actionSave.setEnabled(True)
             # self.timer.stop()
         self.period_chanded()
         
@@ -169,22 +178,28 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         self.start_stop_recording_status = not (self.start_stop_recording_status)
         if self.start_stop_recording_status:
             self.start_stop_recording.setStyleSheet('background: rgb(0,170,0);')
+            self.save_button.setEnabled(False)
+            self.actionSave.setEnabled(False)
         else:
             self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
+            self.save_button.setEnabled(True)
+            self.actionSave.setEnabled(True)
 
     def save_handler(self):
-        FILENAME, FILTER = qt.QFileDialog.getSaveFileName(None, 
+        FILENAME= qt.QFileDialog.getSaveFileName(None, 
                                                     'Save File', 
                                                     "output.csv",
                                                     filter= "CSV Files (*.csv)", 
                                                     options=qt.QFileDialog.DontUseNativeDialog)
-        print(FILENAME)       
-        print(FILTER)
         try:
-            with open(FILENAME, "w", newline="") as file:
+            with open(FILENAME[0], "w", newline="") as file:
                 writer = csv.writer(file, delimiter='\t')
+                adcs = []
+                for i in range(10):
+                    adcs.append("ADC"+str(i+1))
+                writer.writerow(adcs)
                 writer.writerows(self.data_to_scv)
-            self.data_to_scv = np.empty((1,10))
+            self.data_to_scv = np.empty((0,10))
         except:
             msgbox = qt.QMessageBox()
             msgbox.setText("Did not saved")
@@ -232,9 +247,12 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         self.comboBox_ports.addItems(valid_ports)
     def autoscale(self):
         self.graphWidget.enableAutoRange()
+    def timer_monitoring(self):
+        self.size_of_data_out.setText(str(sys.getsizeof(self.data_to_scv)/1000)+" Kb")
 
 def main():
     app = qt.QApplication(sys.argv)  # Новый экземпляр QApplication
+    app.setStyle('Fusion')
     window = uRPCApp()  # Создаём объект класса uRPCApp
     window.show()  # Показываем окно
     sys.exit(app.exec_())

@@ -129,3 +129,7 @@ dmypy.json
 .pyre/
 
 # binaries
+output.csv
+uRPC_debugger*
+QtGui4*
+QtCore4*

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1085</width>
+    <width>1160</width>
     <height>511</height>
    </rect>
   </property>
@@ -569,22 +569,18 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QLabel" name="size_of_data_txt">
-            <property name="text">
-             <string>Size of data = </string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="size_of_data_out">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QLabel" name="size_of_data_txt">
+          <property name="text">
+           <string>Size of data in RAM</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="size_of_data_out">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="save_button">
@@ -676,33 +672,8 @@
            <string>200 ms</string>
           </property>
           <property name="currentIndex">
-           <number>7</number>
+           <number>2</number>
           </property>
-          <item>
-           <property name="text">
-            <string>1 ms</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>2 ms</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>5 ms</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>10 ms</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>20 ms</string>
-           </property>
-          </item>
           <item>
            <property name="text">
             <string>50 ms</string>
@@ -725,7 +696,37 @@
           </item>
           <item>
            <property name="text">
-            <string>1000 ms</string>
+            <string>1 s</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>5 s</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>10 s</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1 m</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>5 m</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>10 m</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>30 m</string>
            </property>
           </item>
          </widget>
@@ -754,7 +755,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1085</width>
+     <width>1160</width>
      <height>29</height>
     </rect>
    </property>

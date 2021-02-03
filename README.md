@@ -7,6 +7,8 @@
 ```bash
 python urpcadcgui/urgui.py
 ```
+![Скриншот совта]screen.png
 
+В целом всё кроме скорости и дооформления гитхаба.
 
 

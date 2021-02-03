@@ -16,12 +16,13 @@ for port in sorted(ports):
 
 
 # device = urpcadc.UrpcadcDeviceHandle("com:///dev/ttyACM0")
-# #data = device.get_identity_information()
-# timer = time.time() 
-# for i in range(100000):
-#     data = device.get_conversion()
-#     # print(data.data[0])
-# timer = time.time() - timer 
-# device.close_device()
+device = urpcadc.UrpcadcDeviceHandle("com:\\\\.\\COM5")
+#data = device.get_identity_information()
+timer = time.time() 
+for i in range(100000):
+    data = device.get_conversion()
+    # print(data.data[0])
+timer = time.time() - timer 
+device.close_device()
 
-# print(timer)
+print(timer)
