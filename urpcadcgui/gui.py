@@ -419,7 +419,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "epcadc_gui"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "UALab"))
         self.b_1_blue.setText(_translate("MainWindow", "ADC1"))
         self.b_2_green.setText(_translate("MainWindow", "ADC2"))
         self.b_3_red.setText(_translate("MainWindow", "ADC3"))

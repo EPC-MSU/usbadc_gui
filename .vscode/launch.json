@@ -8,7 +8,7 @@
             "name": "Python: Текущий файл",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "module": "urpcadcgui.urgui",
             "console": "integratedTerminal"
         }
     ]

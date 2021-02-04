@@ -1,4 +1,4 @@
-import urpcadc
+import urpcadcgui.urpcadc as urpcadc
 import serial.tools.list_ports
 import time
 
