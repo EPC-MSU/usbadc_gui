@@ -2,8 +2,8 @@ import sys
 import PyQt5.QtWidgets as qt
 import numpy as np
 import PyQt5.QtCore as qtc
-import gui
-import urpcadc
+import urpcadcgui.gui as gui
+import urpcadcgui.urpcadc as urpcadc
 import csv
 import serial.tools.list_ports
 from platform import system

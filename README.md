@@ -5,10 +5,6 @@
 
 Запустить этот проект (из корня):
 ```bash
-python urpcadcgui/urgui.py
+python -m urpcadcgui.urgui.py
 ```
 ![Скриншот совта](screen.png)
-
-В целом всё кроме скорости и дооформления гитхаба.
-
-
