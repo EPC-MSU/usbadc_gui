@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from pyqtgraph import PlotWidget
 
 
 class Ui_MainWindow(object):
@@ -490,4 +491,3 @@ class Ui_MainWindow(object):
         self.action10_Brown.setShortcut(_translate("MainWindow", "Ctrl+0"))
         self.actionRescan.setText(_translate("MainWindow", "Rescan"))
         self.actionRescan.setShortcut(_translate("MainWindow", "Ctrl+R"))
-from pyqtgraph import PlotWidget

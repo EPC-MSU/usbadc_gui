@@ -104,7 +104,7 @@ _logger = logging.getLogger(__name__)
 
 
 def _load_specific_lib(path):
-    from os.path import isfile
+    # from os.path import isfile
     try:
         lib = CDLL(path)
         _logger.debug("Load library " + path + ": success")
@@ -172,6 +172,8 @@ def _logging_callback(loglevel, message, user_data):
         _logger.info(message)
     elif loglevel == 0x04:
         _logger.debug(message)
+
+
 _lib.urpcadc_set_logging_callback(_logging_callback, 0)
 atexit.register(lambda: _lib.urpcadc_set_logging_callback(None, 0))
 _lib.urpcadc_set_logging_callback(_logging_callback, 0)
@@ -558,6 +560,7 @@ class UrpcadcDeviceHandle:
 
     def get_profile(self):
         buffer = c_char_p()
+
         @CFUNCTYPE(c_void_p, c_size_t)
         def allocate(size):
             # http://bugs.python.org/issue1574593

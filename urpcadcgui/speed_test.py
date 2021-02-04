@@ -13,16 +13,14 @@ for port in sorted(ports):
     except (OSError, serial.SerialException):
         pass
 
-
-
 # device = urpcadc.UrpcadcDeviceHandle("com:///dev/ttyACM0")
 device = urpcadc.UrpcadcDeviceHandle("com:\\\\.\\COM5")
-#data = device.get_identity_information()
-timer = time.time() 
+# data = device.get_identity_information()
+timer = time.time()
 for i in range(100000):
     data = device.get_conversion()
     # print(data.data[0])
-timer = time.time() - timer 
+timer = time.time() - timer
 device.close_device()
 
 print(timer)

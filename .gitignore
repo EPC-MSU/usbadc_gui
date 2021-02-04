@@ -128,8 +128,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# binaries
+# my ignore
 output.csv
 uRPC_debugger*
 QtGui4*
 QtCore4*
+.vscode/settings.json
