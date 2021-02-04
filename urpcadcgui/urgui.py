@@ -94,7 +94,7 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             # self.actionStart_stop_recording.setEnabled(True)
             self.actionStart_Stop_getting_data.setEnabled(True)
             self.actionConnect.setEnabled(False)
-        except:
+        except urpcadc.UrpcDeviceUndefinedError:
             msgbox = qt.QMessageBox()
             msgbox.setText("No connection")
             msgbox.exec_()
@@ -115,10 +115,7 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         self.start_stop_recording.setEnabled(False)
         self.start_stop_recording_status = False
         self.start_stop_status = False
-        try:
-            self.device.close_device()
-        except:
-            pass
+        self.device.close_device()
 
     def this_app(self):
         msgbox = qt.QMessageBox()
@@ -147,7 +144,7 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
                     self.linias[i].setData(self.x, self.y[:, i])
             if self.start_stop_recording_status:
                 self.data_to_scv = np.vstack((self.data_to_scv, self.y[-1, :]))
-        except:
+        except urpcadc.UrpcDeviceUndefinedError:
             self.timer.stop()
             self.start_stop_recording.setEnabled(False)
             self.start_stop_recording_status = False
@@ -199,7 +196,7 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
                 writer.writerow(adcs)
                 writer.writerows(self.data_to_scv)
             self.data_to_scv = np.empty((0, 10))
-        except:
+        except FileNotFoundError:
             msgbox = qt.QMessageBox()
             msgbox.setText("Did not saved")
             msgbox.exec_()
