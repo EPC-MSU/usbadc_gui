@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 # my ignore
-output.csv
+*output.csv
 uRPC_debugger*
 QtGui4*
 QtCore4*

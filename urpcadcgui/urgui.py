@@ -12,9 +12,8 @@ import pyqtgraph as pg
 
 class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
     def __init__(self):
-        # Это здесь нужно для доступа к переменным, методам и т.д. в файле gui.py
         super().__init__()
-        self.setupUi(self)  # Это нужно для инициализации нашего дизайна
+        self.setupUi(self)
         self.timer = qtc.QTimer(self)
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self.timer_handler)
@@ -84,6 +83,9 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         self.autoscale_button.clicked.connect(self.autoscale)
 
     def connection(self):
+        """
+        Connect devise unlock some options.
+        """
         device_name = self.comboBox_ports.currentText()
         try:
             self.device = urpcadc.UrpcadcDeviceHandle(device_name)
@@ -100,6 +102,9 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             msgbox.exec_()
 
     def disconnection(self):
+        """
+        Disconnect devise and rollback of GUI to its original state.
+        """
         self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
         self.save_button.setEnabled(True)
         self.actionSave.setEnabled(True)
@@ -118,12 +123,18 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         self.device.close_device()
 
     def this_app(self):
+        """
+        Simple about))) no more.
+        """
         msgbox = qt.QMessageBox()
         msgbox.setText("This is a simple cross-platform application for the usbadc10 device.\nVersion 0.1\n" +
                        "Copyright © 2020 Nikita Presnov\npresnovnikita@yandex.ru")
         msgbox.exec_()
 
     def period_chanded(self):
+        """
+        If you chaged period.
+        """
         self.timer_period = 1000*(self.comboBox_period_val.currentData())
         if self.start_stop_status:
             self.timer.start(self.timer_period)
@@ -134,6 +145,9 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             self.timer.stop()
 
     def timer_handler(self):
+        """
+        Reading data.
+        """
         try:
             data = self.device.get_conversion()
             self.x = self.x + self.timer_period/1000
@@ -157,6 +171,9 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             msgbox.exec_()
 
     def start_stop_handler(self):
+        """
+        Start or stop getting data.
+        """
         self.start_stop_status = not (self.start_stop_status)
         if self.start_stop_status:
             self.start_stop_recording.setEnabled(True)
@@ -171,6 +188,10 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         self.period_chanded()
 
     def start_stop_recording_handler(self):
+        """
+        Start or stop recording data.
+        In fact, it only cange flag value.
+        """
         self.start_stop_recording_status = not (self.start_stop_recording_status)
         if self.start_stop_recording_status:
             self.start_stop_recording.setStyleSheet('background: rgb(0,170,0);')
@@ -182,6 +203,10 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             self.actionSave.setEnabled(True)
 
     def save_handler(self):
+        """
+        Save data from data_to_scv.
+        Of course, I can do it from graph, but here you can get more than 1000 values.
+        """
         FILENAME = qt.QFileDialog.getSaveFileName(None,
                                                   'Save File',
                                                   "output.csv",
@@ -202,6 +227,9 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             msgbox.exec_()
 
     def replot(self):
+        """
+        It only clear unselected lines.
+        """
         self.gstates[0] = self.b_1_blue.isChecked()
         self.gstates[1] = self.b_2_green.isChecked()
         self.gstates[2] = self.b_3_red.isChecked()
@@ -217,6 +245,9 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
                 self.linias[i].clear()
 
     def rescan_com_ports(self):
+        """
+        Read name)
+        """
         self.comboBox_ports.clear()
         ports = serial.tools.list_ports.comports()
         valid_ports = []
@@ -243,20 +274,32 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         self.comboBox_ports.addItems(valid_ports)
 
     def autoscale(self):
+        """
+        Also read name)
+        """
         self.graphWidget.enableAutoRange()
 
     def timer_monitoring(self):
+        """
+        Ask the size of data_to_csv to print it.
+        """
         self.size_of_data_out.setText(str(sys.getsizeof(self.data_to_scv)/1000)+" Kb")
 
 
+def fortest():
+    hello = "Hello, i am working app)))"
+    print(hello)
+    return hello
+
+
 def main():
-    app = qt.QApplication(sys.argv)  # Новый экземпляр QApplication
+    app = qt.QApplication(sys.argv)
     app.setStyle('Fusion')
-    window = uRPCApp()  # Создаём объект класса uRPCApp
-    window.show()  # Показываем окно
+    window = uRPCApp()
+    window.show()
     sys.exit(app.exec_())
     window.disconnecton()
 
 
-if __name__ == '__main__':  # Если мы запускаем файл напрямую, а не импортируем
-    main()  # то запускаем функцию main()
+if __name__ == '__main__':
+    main()
