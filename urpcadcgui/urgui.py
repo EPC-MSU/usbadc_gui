@@ -1,5 +1,6 @@
 import sys
 import PyQt5.QtWidgets as qt
+from PyQt5 import QtGui
 import numpy as np
 import PyQt5.QtCore as qtc
 import urpcadcgui.gui as gui
@@ -61,6 +62,7 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         self.actionDisconnect.setEnabled(False)
         self.actionStart_stop_recording.setEnabled(False)
         self.actionStart_Stop_getting_data.setEnabled(False)
+        self.setWindowIcon(QtGui.QIcon('usbadc10.png'))
 
         self.actionThis_Application.triggered.connect(self.this_app)
         self.connect_button.clicked.connect(self.connection)
