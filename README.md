@@ -3,6 +3,7 @@
 ## RU
 Графический интерфейс для устройства usbadc10.
 Помимо неё здесь также приложены тесты и тест скорости, по которому оценивалась скорость работы. 
+Для работы у вас также долден стоять интерпретатор питон(32 бита для виндовс).
 
 ### Запустить корня под Linux
 ```bash
@@ -27,6 +28,7 @@ source release.sh
 ## EN
 Graphical interface for usbadc10 device.
 In addition to it, tests and a speed test are also attached here, by which the speed of work was assessed.
+To work, you must also have a python interpreter (32 bits for Windows). 
 
 ### Run root under Linux
 ```bash
