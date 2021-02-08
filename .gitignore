@@ -134,3 +134,6 @@ dmypy.json
 uRPC_debugger*
 QtGui4*
 QtCore4*
+binary.zip
+binary/urgui.zip
+binary/urgui.exe

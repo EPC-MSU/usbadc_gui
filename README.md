@@ -5,12 +5,12 @@
 Помимо неё здесь также приложены тесты и тест скорости, по которому оценивалась скорость работы. 
 Для работы у вас также долден стоять интерпретатор питон(32 бита для виндовс).
 
-### Запустить корня под Linux
+### Запустить из под корня под Linux
 ```bash
 sudo -H pip3 install -r requirements.txt
 python3 -m urpcadcgui.urgui
 ```
-### Запустить корня под Windows
+### Запустить из под корня под Windows
 ```bash
 pip install -r requirements.txt
 python -m urpcadcgui.urgui
@@ -19,7 +19,7 @@ python -m urpcadcgui.urgui
 ```bash
 source release.sh
 ```
-### Сборка бинарного файла Установка Windows
+### Сборка бинарного файла Windows
 ```bash
 .\release-win.bat
 ```
@@ -30,12 +30,12 @@ Graphical interface for usbadc10 device.
 In addition to it, tests and a speed test are also attached here, by which the speed of work was assessed.
 To work, you must also have a python interpreter (32 bits for Windows). 
 
-### Run root under Linux
+### Run from root under Linux
 ```bash
 sudo -H pip3 install -r requirements.txt
 python3 -m urpcadcgui.urgui
 ```
-### Run root under Windows
+### Run from root under Windows
 ```bash
 pip install -r requirements.txt
 python -m urpcadcgui.urgui
@@ -44,7 +44,7 @@ python -m urpcadcgui.urgui
 ```bash
 source release.sh
 ```
-### Build the binary Install Windows
+### Build Windows Binary
 ```bash
 .\release-win.bat
 ```
