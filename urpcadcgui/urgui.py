@@ -9,6 +9,7 @@ import csv
 import serial.tools.list_ports
 from platform import system
 import pyqtgraph as pg
+import time
 
 
 class DataUpdater(qtc.QObject):
@@ -18,21 +19,25 @@ class DataUpdater(qtc.QObject):
 
     # метод, который будет выполнять алгоритм в другом потоке
     def run(self):
+        systimer = time.time()
         while True:
             # for i in range(10):
             #     if self.mainwindow.gstates[i]:
             #         self.mainwindow.linias[i].setData(self.mainwindow.x, self.mainwindow.y[:, i])
             # qtc.QThread.msleep(200)
             try:
-                self.mainwindow.x = self.mainwindow.x + self.mainwindow.timer_period/1000
+                time_now = time.time() - systimer
                 data = self.mainwindow.device.get_conversion()
+                self.mainwindow.x = np.roll(self.mainwindow.x, -1)
+                self.mainwindow.x[-1] = time_now
                 for i in range(10):
                     self.mainwindow.y[:, i] = np.roll(self.mainwindow.y[:, i], -1, axis=0)
                     self.mainwindow.y[-1, i] = data.data[i] / 10000
                     # if self.gstates[i]:
                     #     self.linias[i].setData(self.x, self.y[:, i])
                 if self.mainwindow.start_stop_recording_status:
-                    self.mainwindow.data_to_scv = np.vstack((self.mainwindow.data_to_scv, self.mainwindow.y[-1, :]))
+                    self.mainwindow.data_to_scv = np.vstack((self.mainwindow.data_to_scv,
+                                                            np.append(time_now, self.mainwindow.y[-1, :])))
             except urpcadc.UrpcDeviceUndefinedError:
                 self.mainwindow.timer.stop()
                 self.mainwindow.start_stop_recording.setEnabled(False)
@@ -75,7 +80,7 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
         period_vals = np.array([0.05, 0.1, 0.2, 0.5, 1, 5, 10, 60, 300, 600])
         for i in range(10):
             self.comboBox_period_val.setItemData(i, period_vals[i])
-        self.data_to_scv = np.empty((0, 10))
+        self.data_to_scv = np.empty((0, 11))
         self.gstates = [True for gstates in range(10)]
         self.gcolors = [(0, 0, 255), (0, 170, 0), (255, 0, 0), (0, 0, 0), (255, 85, 0),
                         (0, 170, 255), (0, 255, 0), (255, 170, 255), (111, 111, 111), (170, 85, 0)]
@@ -195,7 +200,7 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             self.timer.start(200)
             self.threadplot.start()
             self.y = np.zeros((1000, 10))
-            self.data_to_scv = np.empty((0, 10))
+            self.data_to_scv = np.empty((0, 11))
             self.x = np.linspace(-self.timer_period, 0, 1000)
         else:
             self.timer.stop()
@@ -276,11 +281,12 @@ class uRPCApp(qt.QMainWindow, gui.Ui_MainWindow):
             with open(FILENAME[0], "w", newline="") as file:
                 writer = csv.writer(file, delimiter='\t')
                 adcs = []
+                adcs.append("Time, s")
                 for i in range(10):
                     adcs.append("ADC"+str(i+1))
                 writer.writerow(adcs)
                 writer.writerows(self.data_to_scv)
-            self.data_to_scv = np.empty((0, 10))
+            # self.data_to_scv = np.empty((0, 11))
         except FileNotFoundError:
             msgbox = qt.QMessageBox()
             msgbox.setText("Did not saved")
