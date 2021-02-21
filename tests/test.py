@@ -1,5 +1,5 @@
 # from unittest import TestCase
-# from urpcadcgui.urgui import fortest
+# from usbadc10gui.urgui import fortest
 
 
 # class Test(TestCase):
@@ -7,7 +7,7 @@
 #         self.assertTrue(fortest() == "Hello, i am working app)))")
 
 from unittest import TestCase
-from urpcadcgui.urgui import fortest
+from usbadc10gui.gui import fortest
 
 
 class TestNothing(TestCase):

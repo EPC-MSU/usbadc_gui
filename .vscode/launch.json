@@ -8,7 +8,7 @@
             "name": "Python: Текущий файл",
             "type": "python",
             "request": "launch",
-            "module": "urpcadcgui.urgui",
+            "module": "usbadc10gui",
             "console": "integratedTerminal"
         }
     ]
