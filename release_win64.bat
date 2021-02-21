@@ -11,11 +11,11 @@ venv\Scripts\python -m pip install --upgrade pip
 venv\Scripts\python -m pip install -r requirements.txt
 
 venv\Scripts\python -m pip install pyinstaller
-venv\Scripts\pyinstaller -i "urpcadcgui/usbadc10.ico" --add-data "urpcadcgui/usbadc10.ico;." --clean -F --noconsole --add-binary "urpcadcgui/urpcadc-win64/urpcadc.dll;." urpcadcgui/urgui.py
+venv\Scripts\pyinstaller -i "usbadc10gui/usbadc10.ico" --add-data "usbadc10gui/usbadc10.ico;." --clean -F --noconsole --add-binary "usbadc10gui/usbadc10-win64/usbadc10.dll;." usbadc10gui/__main__.py -n Usbadc10
 
-move dist release
+move dist release_win64
 if exist build rd /s/q build
 if exist dist rd /s/q dist
 if exist urgui.spec del urgui.spec
-copy urpcadcgui\usbadc10.ico release
+copy urpcadcgui\usbadc10.ico release_win64
 cd release

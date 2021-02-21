@@ -8,12 +8,12 @@
 ### Запустить из под корня под Linux
 ```bash
 sudo -H pip3 install -r requirements.txt
-python3 -m urpcadcgui.urgui
+python3 -m usbadc10gui
 ```
 ### Запустить из под корня под Windows
 ```bash
 pip install -r requirements.txt
-python -m urpcadcgui.urgui
+python -m usbadc10gui
 ```
 ### Сборка бинарного файла Linux
 ```bash
@@ -33,12 +33,12 @@ To work, you must also have a python interpreter (32 bits for Windows).
 ### Run from root under Linux
 ```bash
 sudo -H pip3 install -r requirements.txt
-python3 -m urpcadcgui.urgui
+python3 -m usbadc10gui
 ```
 ### Run from root under Windows
 ```bash
 pip install -r requirements.txt
-python -m urpcadcgui.urgui
+python -m usbadc10gui
 ```
 ### Build Linux Binary
 ```bash

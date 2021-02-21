@@ -9,7 +9,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
-release/
+release*/
 develop-eggs/
 dist/
 downloads/
@@ -137,3 +137,4 @@ QtCore4*
 binary.zip
 binary/urgui.zip
 binary/urgui.exe
+*.zip
