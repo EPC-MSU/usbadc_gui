@@ -1,6 +1,9 @@
+"""
+This module is only responsible for the type of GUI.
+"""
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'design.ui'
+# Form implementation generated from reading ui file 'usbadc10gui/design.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.0
 #
@@ -9,13 +12,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from pyqtgraph import PlotWidget
+from qwt import QwtPlot
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1160, 511)
+        MainWindow.resize(1224, 596)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
@@ -193,20 +196,17 @@ class Ui_MainWindow(object):
         self.b_10_brown.setObjectName("b_10_brown")
         self.verticalLayout.addWidget(self.b_10_brown)
         self.horizontalLayout_4.addLayout(self.verticalLayout)
-        self.graphWidget = PlotWidget(self.centralwidget)
+        self.graphWidget = QwtPlot(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.graphWidget.sizePolicy().hasHeightForWidth())
+        self.graphWidget.setSizePolicy(sizePolicy)
         self.graphWidget.setObjectName("graphWidget")
         self.horizontalLayout_4.addWidget(self.graphWidget)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.autoscale_button = QtWidgets.QPushButton(self.centralwidget)
-        self.autoscale_button.setObjectName("autoscale_button")
-        self.verticalLayout_2.addWidget(self.autoscale_button)
-        self.line_2 = QtWidgets.QFrame(self.centralwidget)
-        self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.line_2.setObjectName("line_2")
-        self.verticalLayout_2.addWidget(self.line_2)
         self.start_stop = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
@@ -292,7 +292,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addLayout(self.horizontalLayout_4)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1160, 29))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1224, 29))
         self.menuBar.setObjectName("menuBar")
         self.menuFILE = QtWidgets.QMenu(self.menuBar)
         self.menuFILE.setObjectName("menuFILE")
@@ -430,7 +430,6 @@ class Ui_MainWindow(object):
         self.b_8_pig.setText(_translate("MainWindow", "ADC8"))
         self.b_9_gray.setText(_translate("MainWindow", "ADC9"))
         self.b_10_brown.setText(_translate("MainWindow", "ADC10"))
-        self.autoscale_button.setText(_translate("MainWindow", "Autoscale"))
         self.start_stop.setText(_translate("MainWindow", "Start/Stop getting data"))
         self.start_stop_recording.setText(_translate("MainWindow", "Start/stop recording"))
         self.size_of_data_txt.setText(_translate("MainWindow", "Size of data in RAM"))

@@ -1,7 +1,7 @@
 import usbadc10gui.usbadc10 as usbadc10
 import serial.tools.list_ports
 import time
-# import numpy as np
+import numpy as np
 
 ports = serial.tools.list_ports.comports(include_links=True)
 valid_ports = []
@@ -25,7 +25,7 @@ for i in range(100000):
     # a = np.roll(a, -1)
     # a = np.append(a[1:], a[-1])
     data = device.get_conversion()
-    # print(data.data[0])
+    print(np.array(data.data)/10000)
 timer = time.time() - timer
 device.close_device()
 

@@ -21,7 +21,7 @@ source release.sh
 ```
 ### Сборка бинарного файла Windows
 ```bash
-.\release-win.bat
+.\release-win64.bat
 ```
 ![Скриншот совта](screen.png)
 
@@ -46,6 +46,6 @@ source release.sh
 ```
 ### Build Windows Binary
 ```bash
-.\release-win.bat
+.\release-win64.bat
 ```
 ![Owt screenshot](screen.png)
