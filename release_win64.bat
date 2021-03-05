@@ -18,4 +18,3 @@ if exist build rd /s/q build
 if exist dist rd /s/q dist
 if exist urgui.spec del urgui.spec
 copy urpcadcgui\usbadc10.ico release_win64
-cd release
