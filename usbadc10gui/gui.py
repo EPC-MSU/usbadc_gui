@@ -244,7 +244,7 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
         Simple about))) no more.
         """
         msgbox = qt.QMessageBox()
-        msgbox.setText("This is a simple cross-platform application for the usbadc10 device.\nVersion 1.0.0\n" +
+        msgbox.setText("This is a simple cross-platform application for the usbadc10 device.\nVersion 1.1.0\n" +
                        "Copyright © 2020 Nikita Presnov\npresnovnikita@yandex.ru")
         msgbox.exec_()
 
@@ -383,6 +383,9 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
                 except (OSError, serial.SerialException):
                     pass
         else:
+            msgbox = qt.QMessageBox()
+            msgbox.setText("Unsupported system")
+            msgbox.exec_()
             raise RuntimeError("unexpected OS")
         self.comboBox_ports.addItems(valid_ports)
 
