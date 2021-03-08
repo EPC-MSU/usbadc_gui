@@ -116,7 +116,10 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
         #                 (0, 170, 255), (0, 255, 0), (255, 170, 255), (111, 111, 111), (170, 85, 0)]
 
         self.x = np.zeros(1000)
+        self.x[...] = None
         self.y = np.zeros((1000, 10))
+        self.y[...] = None
+        self.data_to_scv = np.empty((0, 11))
 
         # self.graphWidget.setBackground('w')
         # self.graphWidget.enableAutoRange()
@@ -259,7 +262,9 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
             self.timer_data.start(self.timer_period)
             # self.threadplot.start()
             self.x = np.zeros(1000)
+            self.x[...] = None
             self.y = np.zeros((1000, 10))
+            self.y[...] = None
             self.data_to_scv = np.empty((0, 11))
         else:
             self.timer.stop()
