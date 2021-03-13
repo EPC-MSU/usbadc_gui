@@ -31,7 +31,10 @@ class DataUpdater(qtc.QObject):
     ``x`` and ``y``, which are arrays of numpai widths (coordinate 2),
     respectively 1 and 10
 
-    ``timer_period``, int value in milliseconds
+    ``timer_period``, value in milliseconds
+
+    ``start_stop_status``, bool value to understand,
+    get data or not
 
     ``start_stop_recording_status``, bool value to understand,
     when write data
@@ -55,7 +58,7 @@ class DataUpdater(qtc.QObject):
         #     if self.mainwindow.gstates[i]:
         #         self.mainwindow.linias[i].setData(self.mainwindow.x, self.mainwindow.y[:, i])
         # qtc.QThread.msleep(200)
-        while(True):
+        while(self.mainwindow.start_stop_status):
             try:
                 time_now = time.time() - self.systimer
                 data = self.mainwindow.device.get_conversion()
@@ -67,7 +70,7 @@ class DataUpdater(qtc.QObject):
             except usbadc10.UrpcDeviceUndefinedError:
                 self.connect_error.emit()
                 break
-            qtc.QThread.msleep(int(self.mainwindow.timer_period))
+            qtc.QThread.msleep(int(self.mainwindow.timer_period)-9)
 
 
 class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
