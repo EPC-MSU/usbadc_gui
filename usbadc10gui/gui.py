@@ -26,11 +26,20 @@ import sys
 class DataUpdater(qtc.QObject):
     """
     The ``DataUpdater`` class is responsible for receiving data.
-    In this case, the parent class ``mainwindow`` must have attributes x and y,
-    which are arrays of numpai widths (coordinate 2),
-    respectively 1 and 10.
+    In this case, the class ``mainwindow`` must have next atributes:
+
+    ``x`` and ``y``, which are arrays of numpai widths (coordinate 2),
+    respectively 1 and 10
+
+    ``timer_period``, int value in milliseconds
+
+    ``start_stop_recording_status``, bool value to understand,
+    when write data
+
+    ``data_to_scv``, array of numpai width (coordinate 2) is 11
     """
     systimer = time.time()
+    connect_error = qtc.pyqtSignal()
 
     def __init__(self, mainwindow, parent=None):
         super().__init__()
@@ -46,28 +55,19 @@ class DataUpdater(qtc.QObject):
         #     if self.mainwindow.gstates[i]:
         #         self.mainwindow.linias[i].setData(self.mainwindow.x, self.mainwindow.y[:, i])
         # qtc.QThread.msleep(200)
-        try:
-            time_now = time.time() - self.systimer
-            data = self.mainwindow.device.get_conversion()
-            self.mainwindow.x = np.append(self.mainwindow.x[1:], time_now)
-            self.mainwindow.y = np.vstack((self.mainwindow.y[1:, :], np.array(data.data)/10000))
-            if self.mainwindow.start_stop_recording_status:
-                self.mainwindow.data_to_scv = np.vstack((self.mainwindow.data_to_scv,
-                                                        np.append(time_now, self.mainwindow.y[-1, :])))
-        except usbadc10.UrpcDeviceUndefinedError:
-            self.mainwindow.timer.stop()
-            self.mainwindow.timer_data.stop()
-            self.mainwindow.start_stop_recording.setEnabled(False)
-            self.mainwindow.start_stop_recording_status = False
-            self.mainwindow.start_stop_status = False
-            self.mainwindow.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
-            self.mainwindow.save_button.setEnabled(True)
-            self.mainwindow.actionSave.setEnabled(True)
-            msgbox = qt.QMessageBox()
-            msgbox.setText("Connection lost")
-            msgbox.exec_()
-            #     break
-            # qtc.QThread.msleep(int(self.mainwindow.timer_period))
+        while(True):
+            try:
+                time_now = time.time() - self.systimer
+                data = self.mainwindow.device.get_conversion()
+                self.mainwindow.x = np.append(self.mainwindow.x[1:], time_now)
+                self.mainwindow.y = np.vstack((self.mainwindow.y[1:, :], np.array(data.data)/10000))
+                if self.mainwindow.start_stop_recording_status:
+                    self.mainwindow.data_to_scv = np.vstack((self.mainwindow.data_to_scv,
+                                                            np.append(time_now, self.mainwindow.y[-1, :])))
+            except usbadc10.UrpcDeviceUndefinedError:
+                self.connect_error.emit()
+                break
+            qtc.QThread.msleep(int(self.mainwindow.timer_period))
 
 
 class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
@@ -88,9 +88,9 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self.timer_handler_data)
 
-        self.timer_data = qtc.QTimer(self)
-        self.timer_data.setSingleShot(False)
-        self.timer_data.timeout.connect(self.timer_handler)
+        # self.timer_data = qtc.QTimer(self)
+        # self.timer_data.setSingleShot(False)
+        # self.timer_data.timeout.connect(self.timer_handler)
 
         self.timer_monitor = qtc.QTimer(self)
         self.timer_monitor.setSingleShot(False)
@@ -115,9 +115,9 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
         # self.gcolors = [(0, 0, 255), (0, 170, 0), (255, 0, 0), (0, 0, 0), (255, 85, 0),
         #                 (0, 170, 255), (0, 255, 0), (255, 170, 255), (111, 111, 111), (170, 85, 0)]
 
-        self.x = np.zeros(1000)
+        self.x = np.empty(1000)
         self.x[...] = None
-        self.y = np.zeros((1000, 10))
+        self.y = np.empty((1000, 10))
         self.y[...] = None
         self.data_to_scv = np.empty((0, 11))
 
@@ -146,10 +146,14 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
                              minwidth=0.5,
                              minstyle=qtc.Qt.DotLine)
         self.graphWidget.setAxisScale(axisId=qwt.QwtPlot.yLeft,
-                                      min_=0.0, max_=3.3, stepSize=0.5)
+                                      min_=0.0,
+                                      max_=3.3,
+                                      stepSize=0.5)
         self.graphWidget.enableAxis(axisId=qwt.QwtPlot.yRight, tf=True)
         self.graphWidget.setAxisScale(axisId=qwt.QwtPlot.yRight,
-                                      min_=0.0, max_=3.3, stepSize=0.5)
+                                      min_=0.0,
+                                      max_=3.3,
+                                      stepSize=0.5)
         # self.graphWidget.enableAxis(axisId=qwt.QwtPlot.xTop, tf=True)
         # self.graphWidget.setAxisAutoScale(axisId=qwt.QwtPlot.xTop, on=True)
         # self.graphWidget.updateAxes()
@@ -162,10 +166,11 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
             self.linias.append(qwt.QwtPlotCurve.make(xdata=self.x, ydata=self.y[:, i],
                                plot=self.graphWidget, linewidth=2, linecolor=self.gcolors[i]))
         self.graphWidget.show()
-        # self.threadplot = qtc.QThread()
+        self.threadplot = qtc.QThread()
         self.dataupdater = DataUpdater(mainwindow=self)
-        # self.dataupdater.moveToThread(self.threadplot)
-        # self.threadplot.started.connect(self.dataupdater.run)
+        self.dataupdater.connect_error.connect(self.connect_error_handler)
+        self.dataupdater.moveToThread(self.threadplot)
+        self.threadplot.started.connect(self.dataupdater.run)
         # self.threadplot.start()
 
         self.disconnect_button.setEnabled(False)
@@ -226,8 +231,8 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
         self.save_button.setEnabled(True)
         self.actionSave.setEnabled(True)
         self.timer.stop()
-        self.timer_data.stop()
-        # self.threadplot.exit()
+        # self.timer_data.stop()
+        self.threadplot.exit()
         self.rescan_com_ports()
         self.disconnect_button.setEnabled(False)
         self.connect_button.setEnabled(True)
@@ -259,23 +264,21 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
         if self.start_stop_status:
             self.timer.start(200)
             self.dataupdater.systimer = time.time()
-            self.timer_data.start(self.timer_period)
-            # self.threadplot.start()
-            self.x = np.zeros(1000)
+            # self.timer_data.start(self.timer_period)
+            self.threadplot.start()
             self.x[...] = None
-            self.y = np.zeros((1000, 10))
             self.y[...] = None
             self.data_to_scv = np.empty((0, 11))
         else:
             self.timer.stop()
-            self.timer_data.stop()
-            # self.threadplot.exit()
+            # self.timer_data.stop()
+            self.threadplot.exit()
 
-    def timer_handler(self):
-        """
-        Getting data.
-        """
-        self.dataupdater.run()
+    # def timer_handler(self):
+    #     """
+    #     Getting data.
+    #     """
+    #     self.dataupdater.run()
 
     def timer_handler_data(self):
         """
@@ -393,6 +396,21 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
             msgbox.exec_()
             raise RuntimeError("unexpected OS")
         self.comboBox_ports.addItems(valid_ports)
+
+    @qtc.pyqtSlot()
+    def connect_error_handler(self):
+        self.threadplot.exit()
+        self.timer.stop()
+        # self.timer_data.stop()
+        self.start_stop_recording.setEnabled(False)
+        self.start_stop_recording_status = False
+        self.start_stop_status = False
+        self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
+        self.save_button.setEnabled(True)
+        self.actionSave.setEnabled(True)
+        msgbox = qt.QMessageBox()
+        msgbox.setText("Connection lost")
+        msgbox.exec_()
 
     # def autoscale(self):
     #     """
