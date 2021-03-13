@@ -328,13 +328,14 @@ class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
         Save data from data_to_scv.
         Of course, I can do it from graph, but here you can get more than 1000 values.
         """
-        FILENAME = qt.QFileDialog.getSaveFileName(None,
+        local_filename = str(time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime()))
+        filename = qt.QFileDialog.getSaveFileName(None,
                                                   'Save File',
-                                                  "output.csv",
+                                                  local_filename + ".csv",
                                                   filter="CSV Files (*.csv)",
                                                   options=qt.QFileDialog.DontUseNativeDialog)
         try:
-            with open(FILENAME[0], "w", newline="") as file:
+            with open(filename[0], "w", newline="") as file:
                 writer = csv.writer(file, delimiter='\t')
                 adcs = []
                 adcs.append("Time, s")
