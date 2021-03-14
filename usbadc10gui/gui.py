@@ -1,7 +1,7 @@
 """
 This contains the main logic of the program.
 
-The ``uRPCApp`` class contains the logic of the GUI.
+The ``UsbadcAPP`` class contains the logic of the GUI.
 
 The ``DataUpdater`` class is responsible for receiving data.
 
@@ -69,9 +69,9 @@ class DataUpdater(qtc.QObject):
             qtc.QThread.msleep(int(self.mainwindow.timer_period)-9)
 
 
-class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
+class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
     """
-    The ``uRPCApp`` class contains the logic of the GUI.
+    The ``UsbadcAPP`` class contains the logic of the GUI.
     """
     gcolors = (QtGui.QColor(0, 0, 255), QtGui.QColor(0, 170, 0), QtGui.QColor(255, 0, 0),
                QtGui.QColor(0, 0, 0), QtGui.QColor(255, 85, 0), QtGui.QColor(0, 170, 255),
