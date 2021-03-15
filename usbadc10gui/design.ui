@@ -665,8 +665,26 @@
            <string>200 ms</string>
           </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>5</number>
           </property>
+          <property name="maxVisibleItems">
+           <number>10</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>~1 ms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>10 ms</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>20 ms</string>
+           </property>
+          </item>
           <item>
            <property name="text">
             <string>50 ms</string>

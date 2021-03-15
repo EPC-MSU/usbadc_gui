@@ -52,12 +52,6 @@ class DataUpdater(qtc.QObject):
         """
         Special function to get data.
         """
-        # self.systimer = time.time()
-        # while True:
-        # for i in range(10):
-        #     if self.mainwindow.gstates[i]:
-        #         self.mainwindow.linias[i].setData(self.mainwindow.x, self.mainwindow.y[:, i])
-        # qtc.QThread.msleep(200)
         while(self.mainwindow.start_stop_status):
             try:
                 time_now = time.time() - self.systimer
@@ -70,7 +64,16 @@ class DataUpdater(qtc.QObject):
             except usbadc10.UrpcDeviceUndefinedError:
                 self.connect_error.emit()
                 break
-            qtc.QThread.msleep(int(self.mainwindow.timer_period)-9)
+            if (self.mainwindow.timer_period > 200):
+                period = int(self.mainwindow.timer_period/100)
+                for i in range(period):
+                    qtc.QThread.msleep(100)
+                    if self.mainwindow.out_status:
+                        self.mainwindow.out_status = False
+                        break
+            elif (self.mainwindow.timer_period <= 200 and self.mainwindow.timer_period != 1):
+                qtc.QThread.msleep(int(self.mainwindow.timer_period)-9)
+            # else blablabla? No, nothing, it will be near maximum.
 
 
 class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
@@ -91,53 +94,28 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         self.timer.setSingleShot(False)
         self.timer.timeout.connect(self.timer_handler_data)
 
-        # self.timer_data = qtc.QTimer(self)
-        # self.timer_data.setSingleShot(False)
-        # self.timer_data.timeout.connect(self.timer_handler)
-
         self.timer_monitor = qtc.QTimer(self)
         self.timer_monitor.setSingleShot(False)
         self.timer_monitor.timeout.connect(self.timer_monitoring)
         self.timer_monitor.start(5000)
-
-        # self.timer_plot = qtc.QTimer(self)
-        # self.timer_plot.setSingleShot(False)
-        # self.timer_plot.timeout.connect(self.timer_plot_handler)
-        # self.timer_plot.start(200)
 
         self.os_kind = system().lower()
         self.rescan_com_ports()
 
         self.start_stop_status = False
         self.start_stop_recording_status = False
-        period_vals = np.array([0.05, 0.1, 0.2, 0.5, 1, 5, 10, 60, 300, 600])
+        self.out_status = False
+        period_vals = np.array([0.001, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 5, 10, 60, 300, 600])
         for i in range(10):
             self.comboBox_period_val.setItemData(i, period_vals[i])
         self.data_to_scv = np.empty((0, 11))
         self.gstates = [True for gstates in range(10)]
-        # self.gcolors = [(0, 0, 255), (0, 170, 0), (255, 0, 0), (0, 0, 0), (255, 85, 0),
-        #                 (0, 170, 255), (0, 255, 0), (255, 170, 255), (111, 111, 111), (170, 85, 0)]
 
         self.x = np.empty(1000)
         self.x[...] = None
         self.y = np.empty((1000, 10))
         self.y[...] = None
         self.data_to_scv = np.empty((0, 11))
-
-        # self.graphWidget.setBackground('w')
-        # self.graphWidget.enableAutoRange()
-        # self.graphWidget.setLimits(yMin=0, yMax=3.3)
-        # styles = {'color': 'r', 'font-size': '20px'}
-        # self.graphWidget.setLabel('left', 'Voltage, V', **styles)
-        # self.graphWidget.setLabel('bottom', 'Time, s', **styles)
-        # self.graphWidget.showGrid(x=True, y=True)
-        # self.graphWidget.setYRange(-0, 3.3, padding=0)
-        # self.linias = []
-        # for i in range(10):
-        #     self.linias.append(self.graphWidget.plot(self.x,
-        #                                              self.y[:, i],
-        #                                              pen=pg.mkPen(color=self.gcolors[i],
-        #                                                           width=2)))
 
         qwt.QwtPlotGrid.make(plot=self.graphWidget,
                              enablemajor=(True, True),
@@ -157,10 +135,6 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
                                       min_=0.0,
                                       max_=3.3,
                                       stepSize=0.5)
-        # self.graphWidget.enableAxis(axisId=qwt.QwtPlot.xTop, tf=True)
-        # self.graphWidget.setAxisAutoScale(axisId=qwt.QwtPlot.xTop, on=True)
-        # self.graphWidget.updateAxes()
-        # self.graphWidget.setTitle(" ")
 
         self.graphWidget.setAxisTitle(qwt.QwtPlot.xBottom, "Time, s")
         self.graphWidget.setAxisTitle(qwt.QwtPlot.yLeft, "Voltage, V")
@@ -202,9 +176,6 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         self.save_button.clicked.connect(self.save_handler)
         self.start_stop.clicked.connect(self.start_stop_handler)
         self.start_stop_recording.clicked.connect(self.start_stop_recording_handler)
-        # self.autoscale_button.clicked.connect(self.autoscale)
-        # self.timer_period = None
-        # self.device = None
 
     def connection(self):
         """
@@ -217,7 +188,6 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
             self.connect_button.setEnabled(False)
             self.start_stop.setEnabled(True)
             self.actionDisconnect.setEnabled(True)
-            # self.actionStart_stop_recording.setEnabled(True)
             self.actionStart_Stop_getting_data.setEnabled(True)
             self.actionConnect.setEnabled(False)
             self.rescan_botton.setEnabled(False)
@@ -234,7 +204,6 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         self.save_button.setEnabled(True)
         self.actionSave.setEnabled(True)
         self.timer.stop()
-        # self.timer_data.stop()
         self.threadplot.exit()
         self.rescan_com_ports()
         self.disconnect_button.setEnabled(False)
@@ -264,32 +233,31 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         If you chaged period.
         """
         self.timer_period = 1000*(self.comboBox_period_val.currentData())
+        self.out_status = True
         if self.start_stop_status:
             self.timer.start(200)
             self.dataupdater.systimer = time.time()
-            # self.timer_data.start(self.timer_period)
             self.threadplot.start()
             self.x[...] = None
             self.y[...] = None
             self.data_to_scv = np.empty((0, 11))
         else:
             self.timer.stop()
-            # self.timer_data.stop()
             self.threadplot.exit()
 
-    # def timer_handler(self):
-    #     """
-    #     Getting data.
-    #     """
-    #     self.dataupdater.run()
-
     def timer_handler_data(self):
+        """
+        Timer handler to call drawing data fuction.
+        """
+        self.data_drawer(self.x, self.y)
+
+    def data_drawer(self, x, y):
         """
         Drawing data.
         """
         for i in range(10):
             if self.gstates[i]:
-                self.linias[i].setData(self.x, self.y[:, i])
+                self.linias[i].setData(x, y[:, i])
 
     def start_stop_handler(self):
         """
@@ -343,7 +311,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
                     adcs.append("ADC"+str(i+1))
                 writer.writerow(adcs)
                 writer.writerows(self.data_to_scv)
-            # self.data_to_scv = np.empty((0, 11))
+            self.data_to_scv = np.empty((0, 11))
         except FileNotFoundError:
             msgbox = qt.QMessageBox()
             msgbox.setText("Did not saved")
@@ -405,7 +373,6 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
     def connect_error_handler(self):
         self.threadplot.exit()
         self.timer.stop()
-        # self.timer_data.stop()
         self.start_stop_recording.setEnabled(False)
         self.start_stop_recording_status = False
         self.start_stop_status = False
@@ -415,12 +382,6 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         msgbox = qt.QMessageBox()
         msgbox.setText("Connection lost")
         msgbox.exec_()
-
-    # def autoscale(self):
-    #     """
-    #     Also read name)
-    #     """
-    #     self.graphWidget.enableAutoRange()
 
     def timer_monitoring(self):
         """
