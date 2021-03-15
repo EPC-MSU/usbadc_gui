@@ -10,6 +10,11 @@ venv/bin/python -m pip install -r requirements.txt
 venv/bin/python -m pip install pyinstaller
 venv/bin/pyinstaller --clean -F --add-binary "usbadc10gui/usbadc10-debian/libusbadc10.so:." usbadc10gui/__main__.py -n Usbadc10
 
+
+if [ -d release_linux ]; then
+rm -rf release_linux
+fi
+
 mv dist release_linux
 cd release_linux
 if [ -d build ]; then rm -rf build; fi;

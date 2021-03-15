@@ -224,7 +224,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         Simple about))) no more.
         """
         msgbox = qt.QMessageBox()
-        msgbox.setText("This is a simple cross-platform application for the usbadc10 device.\nVersion 1.1.0\n" +
+        msgbox.setText("This is a simple cross-platform application for the usbadc10 device.\nVersion 1.2.0\n" +
                        "Copyright © 2020 Nikita Presnov\npresnovnikita@yandex.ru")
         msgbox.exec_()
 
@@ -234,13 +234,17 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         """
         self.timer_period = 1000*(self.comboBox_period_val.currentData())
         self.out_status = True
+        self.start_stop_recording_status = False
+        self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
+        self.save_button.setEnabled(True)
+        self.actionSave.setEnabled(True)
         if self.start_stop_status:
             self.timer.start(200)
-            self.dataupdater.systimer = time.time()
-            self.threadplot.start()
             self.x[...] = None
             self.y[...] = None
             self.data_to_scv = np.empty((0, 11))
+            self.dataupdater.systimer = time.time()
+            self.threadplot.start()
         else:
             self.timer.stop()
             self.threadplot.exit()
@@ -270,10 +274,6 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         else:
             self.start_stop_recording.setEnabled(False)
             self.actionStart_stop_recording.setEnabled(False)
-            self.start_stop_recording_status = False
-            self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
-            self.save_button.setEnabled(True)
-            self.actionSave.setEnabled(True)
         self.period_chanded()
 
     def start_stop_recording_handler(self):

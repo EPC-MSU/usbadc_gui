@@ -662,17 +662,17 @@
            <bool>false</bool>
           </property>
           <property name="currentText">
-           <string>200 ms</string>
+           <string>&lt;1 ms</string>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>0</number>
           </property>
           <property name="maxVisibleItems">
            <number>10</number>
           </property>
           <item>
            <property name="text">
-            <string>~1 ms</string>
+            <string>&lt;1 ms</string>
            </property>
           </item>
           <item>
