@@ -2,8 +2,8 @@
 @echo off
 if exist venv rd /s/q venv
 if exist dist rd /s/q dist
-if exist built rd /s/q built
-if exist release rd /s/q release
+if exist build rd /s/q build
+if exist release_win64 rd /s/q release_win64
 echo Please wait. Unfortunately, sometimes it takes several minutes :(
 python -m venv  venv
 
@@ -16,5 +16,5 @@ venv\Scripts\pyinstaller -i "usbadc10gui/usbadc10.ico" --add-data "usbadc10gui/u
 move dist release_win64
 if exist build rd /s/q build
 if exist dist rd /s/q dist
-if exist urgui.spec del urgui.spec
-copy urpcadcgui\usbadc10.ico release_win64
+if exist __main__.spec del __main__.spec
+copy usbadc10gui\usbadc10.ico release_win64
