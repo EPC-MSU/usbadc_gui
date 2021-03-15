@@ -1,7 +1,7 @@
 """
 This contains the main logic of the program.
 
-The ``UsbadcAPP`` class contains the logic of the GUI.
+The ``uRPCApp`` class contains the logic of the GUI.
 
 The ``DataUpdater`` class is responsible for receiving data.
 
@@ -28,14 +28,12 @@ class DataUpdater(qtc.QObject):
     The ``DataUpdater`` class is responsible for receiving data.
     In this case, the class ``mainwindow`` must have next atributes:
 
-    ``device`` uRPC devise with get_conversion() coomand, wich returns numpy array with lengh 10
-
     ``x`` and ``y``, which are arrays of numpai widths (coordinate 2),
     respectively 1 and 10
 
     ``timer_period``, value in milliseconds
 
-    ``period_status``, bool value to understand,
+    ``start_stop_status``, bool value to understand,
     get data or not
 
     ``start_stop_recording_status``, bool value to understand,
@@ -54,7 +52,13 @@ class DataUpdater(qtc.QObject):
         """
         Special function to get data.
         """
-        while(self.mainwindow.period_status):
+        # self.systimer = time.time()
+        # while True:
+        # for i in range(10):
+        #     if self.mainwindow.gstates[i]:
+        #         self.mainwindow.linias[i].setData(self.mainwindow.x, self.mainwindow.y[:, i])
+        # qtc.QThread.msleep(200)
+        while(self.mainwindow.start_stop_status):
             try:
                 time_now = time.time() - self.systimer
                 data = self.mainwindow.device.get_conversion()
@@ -69,9 +73,9 @@ class DataUpdater(qtc.QObject):
             qtc.QThread.msleep(int(self.mainwindow.timer_period)-9)
 
 
-class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
+class uRPCApp(qt.QMainWindow, design.Ui_MainWindow):
     """
-    The ``UsbadcAPP`` class contains the logic of the GUI.
+    The ``uRPCApp`` class contains the logic of the GUI.
     """
     gcolors = (QtGui.QColor(0, 0, 255), QtGui.QColor(0, 170, 0), QtGui.QColor(255, 0, 0),
                QtGui.QColor(0, 0, 0), QtGui.QColor(255, 85, 0), QtGui.QColor(0, 170, 255),
@@ -85,12 +89,21 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
 
         self.timer = qtc.QTimer(self)
         self.timer.setSingleShot(False)
-        self.timer.timeout.connect(self.timer_handler_draw)
+        self.timer.timeout.connect(self.timer_handler_data)
+
+        # self.timer_data = qtc.QTimer(self)
+        # self.timer_data.setSingleShot(False)
+        # self.timer_data.timeout.connect(self.timer_handler)
 
         self.timer_monitor = qtc.QTimer(self)
         self.timer_monitor.setSingleShot(False)
         self.timer_monitor.timeout.connect(self.timer_monitoring)
         self.timer_monitor.start(5000)
+
+        # self.timer_plot = qtc.QTimer(self)
+        # self.timer_plot.setSingleShot(False)
+        # self.timer_plot.timeout.connect(self.timer_plot_handler)
+        # self.timer_plot.start(200)
 
         self.os_kind = system().lower()
         self.rescan_com_ports()
@@ -100,13 +113,31 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         period_vals = np.array([0.05, 0.1, 0.2, 0.5, 1, 5, 10, 60, 300, 600])
         for i in range(10):
             self.comboBox_period_val.setItemData(i, period_vals[i])
+        self.data_to_scv = np.empty((0, 11))
         self.gstates = [True for gstates in range(10)]
+        # self.gcolors = [(0, 0, 255), (0, 170, 0), (255, 0, 0), (0, 0, 0), (255, 85, 0),
+        #                 (0, 170, 255), (0, 255, 0), (255, 170, 255), (111, 111, 111), (170, 85, 0)]
 
         self.x = np.empty(1000)
         self.x[...] = None
         self.y = np.empty((1000, 10))
         self.y[...] = None
         self.data_to_scv = np.empty((0, 11))
+
+        # self.graphWidget.setBackground('w')
+        # self.graphWidget.enableAutoRange()
+        # self.graphWidget.setLimits(yMin=0, yMax=3.3)
+        # styles = {'color': 'r', 'font-size': '20px'}
+        # self.graphWidget.setLabel('left', 'Voltage, V', **styles)
+        # self.graphWidget.setLabel('bottom', 'Time, s', **styles)
+        # self.graphWidget.showGrid(x=True, y=True)
+        # self.graphWidget.setYRange(-0, 3.3, padding=0)
+        # self.linias = []
+        # for i in range(10):
+        #     self.linias.append(self.graphWidget.plot(self.x,
+        #                                              self.y[:, i],
+        #                                              pen=pg.mkPen(color=self.gcolors[i],
+        #                                                           width=2)))
 
         qwt.QwtPlotGrid.make(plot=self.graphWidget,
                              enablemajor=(True, True),
@@ -126,6 +157,11 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
                                       min_=0.0,
                                       max_=3.3,
                                       stepSize=0.5)
+        # self.graphWidget.enableAxis(axisId=qwt.QwtPlot.xTop, tf=True)
+        # self.graphWidget.setAxisAutoScale(axisId=qwt.QwtPlot.xTop, on=True)
+        # self.graphWidget.updateAxes()
+        # self.graphWidget.setTitle(" ")
+
         self.graphWidget.setAxisTitle(qwt.QwtPlot.xBottom, "Time, s")
         self.graphWidget.setAxisTitle(qwt.QwtPlot.yLeft, "Voltage, V")
         self.linias = []
@@ -133,14 +169,12 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
             self.linias.append(qwt.QwtPlotCurve.make(xdata=self.x, ydata=self.y[:, i],
                                plot=self.graphWidget, linewidth=2, linecolor=self.gcolors[i]))
         self.graphWidget.show()
-
-        self.thread_data = qtc.QThread()
+        self.threadplot = qtc.QThread()
         self.dataupdater = DataUpdater(mainwindow=self)
-        self.dataupdater.setObjectName("dataupdater")
         self.dataupdater.connect_error.connect(self.connect_error_handler)
-        self.dataupdater.moveToThread(self.thread_data)
-        self.thread_data.started.connect(self.dataupdater.run)
-        self.thread_data.finished.connect(self.start_stop_handler)
+        self.dataupdater.moveToThread(self.threadplot)
+        self.threadplot.started.connect(self.dataupdater.run)
+        # self.threadplot.start()
 
         self.disconnect_button.setEnabled(False)
         self.start_stop_recording.setEnabled(False)
@@ -153,6 +187,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         self.actionThis_Application.triggered.connect(self.this_app)
         self.connect_button.clicked.connect(self.connection)
         self.disconnect_button.clicked.connect(self.disconnection)
+        self.comboBox_period_val.activated.connect(self.period_chanded)
         self.rescan_botton.clicked.connect(self.rescan_com_ports)
         self.b_1_blue.toggled.connect(self.replot)
         self.b_2_green.toggled.connect(self.replot)
@@ -166,8 +201,10 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         self.b_10_brown.toggled.connect(self.replot)
         self.save_button.clicked.connect(self.save_handler)
         self.start_stop.clicked.connect(self.start_stop_handler)
-        self.comboBox_period_val.activated.connect(self.start_stop_handler)
         self.start_stop_recording.clicked.connect(self.start_stop_recording_handler)
+        # self.autoscale_button.clicked.connect(self.autoscale)
+        # self.timer_period = None
+        # self.device = None
 
     def connection(self):
         """
@@ -180,6 +217,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
             self.connect_button.setEnabled(False)
             self.start_stop.setEnabled(True)
             self.actionDisconnect.setEnabled(True)
+            # self.actionStart_stop_recording.setEnabled(True)
             self.actionStart_Stop_getting_data.setEnabled(True)
             self.actionConnect.setEnabled(False)
             self.rescan_botton.setEnabled(False)
@@ -196,7 +234,8 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         self.save_button.setEnabled(True)
         self.actionSave.setEnabled(True)
         self.timer.stop()
-        # self.thread_data.terminate()
+        # self.timer_data.stop()
+        self.threadplot.exit()
         self.rescan_com_ports()
         self.disconnect_button.setEnabled(False)
         self.connect_button.setEnabled(True)
@@ -209,7 +248,6 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         self.rescan_botton.setEnabled(True)
         self.start_stop_recording_status = False
         self.start_stop_status = False
-        self.period_status = False
         self.device.close_device()
 
     def this_app(self):
@@ -221,54 +259,54 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
                        "Copyright © 2020 Nikita Presnov\npresnovnikita@yandex.ru")
         msgbox.exec_()
 
-    def start_stop_handler(self):
+    def period_chanded(self):
         """
-        Start or stop getting data.
-        And if you chaged period.
-        But in realy it restars getting data.
+        If you chaged period.
         """
-        signal_parent = self.sender().objectName()
-        print(signal_parent)
         self.timer_period = 1000*(self.comboBox_period_val.currentData())
-        if signal_parent == "start_stop":
-            self.start_stop_status = not (self.start_stop_status)
-            if self.start_stop_status:
-                self.timer.start(200)
-                self.start_stop_recording.setEnabled(True)
-                self.actionStart_stop_recording.setEnabled(True)
-                self.period_status = True
-                self.dataupdater.systimer = time.time()
-                self.thread_data.start()
-            else:
-                self.period_status = False
-                self.timer.stop()
-                self.start_stop_recording.setEnabled(False)
-                self.actionStart_stop_recording.setEnabled(False)
-                self.start_stop_recording_status = False
-                self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
-                self.save_button.setEnabled(True)
-                self.actionSave.setEnabled(True)
-        elif signal_parent == "comboBox_period_val":
-            self.start_stop_recording_status = False
-            self.save_button.setEnabled(True)
-            self.actionSave.setEnabled(True)
-            self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
-            self.period_status = False
-        elif signal_parent == "dataupdater" and self.start_stop_status:
-            self.period_status = True
+        if self.start_stop_status:
+            self.timer.start(200)
+            self.dataupdater.systimer = time.time()
+            # self.timer_data.start(self.timer_period)
+            self.threadplot.start()
             self.x[...] = None
             self.y[...] = None
             self.data_to_scv = np.empty((0, 11))
-            self.dataupdater.systimer = time.time()
-            self.thread_data.start()
+        else:
+            self.timer.stop()
+            # self.timer_data.stop()
+            self.threadplot.exit()
 
-    def timer_handler_draw(self):
+    # def timer_handler(self):
+    #     """
+    #     Getting data.
+    #     """
+    #     self.dataupdater.run()
+
+    def timer_handler_data(self):
         """
         Drawing data.
         """
         for i in range(10):
             if self.gstates[i]:
                 self.linias[i].setData(self.x, self.y[:, i])
+
+    def start_stop_handler(self):
+        """
+        Start or stop getting data.
+        """
+        self.start_stop_status = not (self.start_stop_status)
+        if self.start_stop_status:
+            self.start_stop_recording.setEnabled(True)
+            self.actionStart_stop_recording.setEnabled(True)
+        else:
+            self.start_stop_recording.setEnabled(False)
+            self.actionStart_stop_recording.setEnabled(False)
+            self.start_stop_recording_status = False
+            self.start_stop_recording.setStyleSheet('background: rgb(238,238,238);')
+            self.save_button.setEnabled(True)
+            self.actionSave.setEnabled(True)
+        self.period_chanded()
 
     def start_stop_recording_handler(self):
         """
@@ -305,7 +343,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
                     adcs.append("ADC"+str(i+1))
                 writer.writerow(adcs)
                 writer.writerows(self.data_to_scv)
-            self.data_to_scv = np.empty((0, 11))
+            # self.data_to_scv = np.empty((0, 11))
         except FileNotFoundError:
             msgbox = qt.QMessageBox()
             msgbox.setText("Did not saved")
@@ -365,7 +403,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
 
     @qtc.pyqtSlot()
     def connect_error_handler(self):
-        # self.thread_data.terminate()
+        self.threadplot.exit()
         self.timer.stop()
         # self.timer_data.stop()
         self.start_stop_recording.setEnabled(False)
@@ -377,6 +415,12 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         msgbox = qt.QMessageBox()
         msgbox.setText("Connection lost")
         msgbox.exec_()
+
+    # def autoscale(self):
+    #     """
+    #     Also read name)
+    #     """
+    #     self.graphWidget.enableAutoRange()
 
     def timer_monitoring(self):
         """
