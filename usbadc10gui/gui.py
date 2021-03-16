@@ -191,6 +191,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
             self.actionStart_Stop_getting_data.setEnabled(True)
             self.actionConnect.setEnabled(False)
             self.rescan_botton.setEnabled(False)
+            self.actionRescan.setEnabled(False)
         except usbadc10.UrpcDeviceUndefinedError:
             msgbox = qt.QMessageBox()
             msgbox.setText("No connection")
@@ -215,6 +216,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         self.actionConnect.setEnabled(True)
         self.start_stop_recording.setEnabled(False)
         self.rescan_botton.setEnabled(True)
+        self.actionRescan.setEnabled(True)
         self.start_stop_recording_status = False
         self.start_stop_status = False
         self.device.close_device()
