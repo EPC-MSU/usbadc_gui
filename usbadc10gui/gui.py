@@ -66,7 +66,7 @@ class DataUpdater(qtc.QObject):
                 break
             if (self.mainwindow.timer_period > 200):
                 period = int(self.mainwindow.timer_period/100)
-                for i in range(period):
+                for _ in range(period):
                     qtc.QThread.msleep(100)
                     if self.mainwindow.out_status:
                         self.mainwindow.out_status = False

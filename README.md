@@ -17,10 +17,12 @@ python -m usbadc10gui
 ```
 ### Сборка бинарного файла Linux
 ```bash
+sudo -H pip3 install pyinstaller
 source release.sh
 ```
 ### Сборка бинарного файла Windows
 ```bash
+pip install pyinstaller
 .\release-win64.bat
 ```
 ![Скриншот совта](screen.png)
@@ -42,10 +44,12 @@ python -m usbadc10gui
 ```
 ### Build Linux Binary
 ```bash
+sudo -H pip3 install pyinstaller
 source release.sh
 ```
 ### Build Windows Binary
 ```bash
+pip install pyinstaller
 .\release-win64.bat
 ```
 ![Owt screenshot](screen.png)
