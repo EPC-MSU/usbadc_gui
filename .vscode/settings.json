@@ -1,4 +1,7 @@
 {
     "python.pythonPath": "/usr/bin/python3",
-    "cornflakes.linter.executablePath": "/usr/local/bin/flake8"
+    "cornflakes.linter.executablePath": "/usr/local/bin/flake8",
+    "python.languageServer": "Jedi",
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false
 }

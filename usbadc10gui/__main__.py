@@ -9,7 +9,7 @@ def main():
     window = UsbadcAPP()
     window.show()
     sys.exit(app.exec_())
-    window.disconnecton()
+    window.disconnection()
 
 
 if __name__ == '__main__':
