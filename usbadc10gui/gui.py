@@ -226,7 +226,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         Simple about))) no more.
         """
         msgbox = qt.QMessageBox()
-        msgbox.setText("This is a simple cross-platform application for the usbadc10 device.\nVersion 1.2.0\n" +
+        msgbox.setText("This is a simple cross-platform application for the usbadc10 device.\nVersion 1.2.1\n" +
                        "Copyright © 2020 Nikita Presnov\npresnovnikita@yandex.ru")
         msgbox.exec_()
 
