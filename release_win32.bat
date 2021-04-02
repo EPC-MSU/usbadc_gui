@@ -11,7 +11,7 @@ venv\Scripts\python -m pip install --upgrade pip
 venv\Scripts\python -m pip install -r requirements.txt
 
 venv\Scripts\python -m pip install pyinstaller
-venv\Scripts\pyinstaller -i "usbadc10gui/usbadc10.ico" --add-data "usbadc10gui/usbadc10.ico;." --clean -F --noconsole --add-binary "usbadc10gui/usbadc10-win32/usbadc10.dll;." usbadc10gui/__main__.py -n Usbadc10
+venv\Scripts\pyinstaller -i "usbadc10gui/usbadc10.ico" --add-data "usbadc10gui/usbadc10.ico;." --clean -F --noconsole --add-binary "usbadc10gui/usbadc10-win32/usbadc10.dll;." usbadc10gui/__main__.py -n UALab
 
 move dist release_win32
 if exist build rd /s/q build
