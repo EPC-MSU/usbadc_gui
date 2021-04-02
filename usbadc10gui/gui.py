@@ -108,7 +108,6 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         period_vals = np.array([0.001, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 5, 10, 60, 300, 600])
         for i in range(10):
             self.comboBox_period_val.setItemData(i, period_vals[i])
-        self.data_to_scv = np.empty((0, 11))
         self.gstates = [True for gstates in range(10)]
 
         self.x = np.empty(1000)
@@ -226,7 +225,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
         Simple about))) no more.
         """
         msgbox = qt.QMessageBox()
-        msgbox.setText("This is a simple cross-platform application for the usbadc10 device.\nVersion 1.2.1\n" +
+        msgbox.setText("This is a simple cross-platform application for the usbadc10 device.\nVersion 1.2.0\n" +
                        "Copyright © 2020 Nikita Presnov\npresnovnikita@yandex.ru")
         msgbox.exec_()
 
