@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Текущий файл",
+            "name": "usbadc10gui debug",
             "type": "python",
             "request": "launch",
             "module": "usbadc10gui",
