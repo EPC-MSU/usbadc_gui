@@ -143,6 +143,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
                                plot=self.graphWidget, linewidth=2, linecolor=self.gcolors[i]))
         self.graphWidget.show()
         self.threadplot = qtc.QThread()
+        # self.threadplot.setPriority(qtc.QThread.HighPriority)
         self.dataupdater = DataUpdater(mainwindow=self)
         self.dataupdater.connect_error.connect(self.connect_error_handler)
         self.dataupdater.moveToThread(self.threadplot)
@@ -245,7 +246,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
             self.y[...] = None
             self.data_to_scv = np.empty((0, 11))
             self.dataupdater.systimer = time.time()
-            self.threadplot.start()
+            # self.threadplot.start(qtc.QThread.HighPriority)
         else:
             self.timer.stop()
             self.threadplot.exit()

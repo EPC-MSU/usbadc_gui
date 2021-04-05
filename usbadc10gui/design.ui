@@ -527,12 +527,24 @@
        </layout>
       </item>
       <item>
-       <widget class="QwtPlot" name="graphWidget" native="true">
+       <widget class="QwtPlot" name="graphWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="canvasBackground">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>255</red>
+           <green>255</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </property>
+        <property name="autoReplot">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -662,10 +674,10 @@
            <bool>false</bool>
           </property>
           <property name="currentText">
-           <string>&lt;1 ms</string>
+           <string>200 ms</string>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>5</number>
           </property>
           <property name="maxVisibleItems">
            <number>10</number>
@@ -1022,8 +1034,8 @@
  <customwidgets>
   <customwidget>
    <class>QwtPlot</class>
-   <extends>QWidget</extends>
-   <header>qwt</header>
+   <extends>QFrame</extends>
+   <header>qwt_plot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
