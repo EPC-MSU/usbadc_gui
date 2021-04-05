@@ -72,7 +72,7 @@ class DataUpdater(qtc.QObject):
                         self.mainwindow.out_status = False
                         break
             elif (self.mainwindow.timer_period <= 200 and self.mainwindow.timer_period != 1):
-                qtc.QThread.msleep(int(self.mainwindow.timer_period)-9)
+                qtc.QThread.msleep(int(self.mainwindow.timer_period))
             # else blablabla? No, nothing, it will be near maximum.
 
 
@@ -246,7 +246,7 @@ class UsbadcAPP(qt.QMainWindow, design.Ui_MainWindow):
             self.y[...] = None
             self.data_to_scv = np.empty((0, 11))
             self.dataupdater.systimer = time.time()
-            # self.threadplot.start(qtc.QThread.HighPriority)
+            self.threadplot.start(qtc.QThread.HighestPriority)
         else:
             self.timer.stop()
             self.threadplot.exit()

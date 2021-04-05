@@ -205,7 +205,7 @@ class Ui_MainWindow(object):
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
         self.graphWidget.setCanvasBackground(brush)
-        self.graphWidget.setAutoReplot(False)
+        # self.graphWidget.setAutoReplot(False)
         self.graphWidget.setObjectName("graphWidget")
         self.horizontalLayout_4.addWidget(self.graphWidget)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
