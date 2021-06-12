@@ -36,6 +36,9 @@ pip install pyinstaller
 
 ![Скриншот совта](screen.png)
 
+В некоторых дистрибудивах линукс(kde neon) приложение берёт системную цветовую схему.
+Также при запуске в некоторые дистрибутивы могут потребовать пакет python3-pyqt5.qtsvg.
+Установить sudo apt install python3-pyqt5.qtsvg.
 ## EN
 
 Graphical interface for usbadc10 device.
@@ -70,4 +73,8 @@ pip install pyinstaller
 .\release-win64.bat
 ```
 
-![Owt screenshot](screen.png)
+![App screenshot](screen.png)
+
+n some Linux distributions (kde neon), the application takes the system color scheme.
+Also, when running on some distributions, the python3-pyqt5.qtsvg package may be required.
+Install sudo apt install python3-pyqt5.qtsvg. 
