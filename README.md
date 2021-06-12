@@ -75,6 +75,6 @@ pip install pyinstaller
 
 ![App screenshot](screen.png)
 
-n some Linux distributions (kde neon), the application takes the system color scheme.
+In some Linux distributions (kde neon), the application takes the system color scheme.
 Also, when running on some distributions, the python3-pyqt5.qtsvg package may be required.
 Install sudo apt install python3-pyqt5.qtsvg. 
